@@ -11,5 +11,8 @@ export default defineConfig({
   server: {
     port: 5173, // або інший
     cors: true,
+    proxy: {
+      '/backend': 'http://localhost', // проксируємо запити до вашого бекенду
+    },
   },
 })

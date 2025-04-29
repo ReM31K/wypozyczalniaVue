@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
-include '../Main/baza.php'; // Підключення до бази
+include '../Main/baza.php'; 
 
 $query = "
     SELECT ksiazka.id, autor.nazwisko, autor.imie, 
@@ -18,9 +18,9 @@ $result = $conn->query($query);
 $authors = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $authors[] = $row; // Додаємо кожного автора до масиву
+        $authors[] = $row; 
     }
 }
 
-echo json_encode($authors); // Виводимо дані у форматі JSON
+echo json_encode($authors); 
 ?>
