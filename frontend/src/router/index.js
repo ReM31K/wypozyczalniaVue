@@ -16,7 +16,7 @@ import AdminCzytelnicy from '../views/admin/AdminCzytelnicy.vue'
 import AdminWypozyczenia from '../views/admin/AdminWypozyczenia.vue'
 
 import AdminAddAutor from '../views/admin/AdminAddAutor.vue'
-//import AdminAddKsiazka from '../views/admin/AdminAddKsiazka.vue'
+import AdminAddKsiazka from '../views/admin/AdminAddKsiazka.vue'
 //import AdminAddWypozyczenie from '../views/admin/AdminAddWypozyczenie.vue'
 //import AdminReturnBook from '../views/admin/AdminReturnBook.vue'
 
@@ -37,7 +37,7 @@ const routes = [
   { path: '/admin/wypozyczenia', component: AdminWypozyczenia },
 
   { path: '/admin/addAutor', component: AdminAddAutor },
-  //{ path: '/admin/addKsiazka', component: AdminAddKsiazka },
+  { path: '/admin/addKsiazka', component: AdminAddKsiazka },
   //{ path: '/admin/addWypozyczenie', component: AdminAddWypozyczenie },
   //{ path: '/admin/returnBook', component: AdminReturnBook },
 ]
