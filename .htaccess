@@ -1,3 +1,8 @@
 RewriteEngine On
-RewriteBase /
-RewriteRule ^api/(.*)$ backend/api/$1 [L]
+RewriteBase /wypozyczalniaVue/
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+RewriteRule ^(.*)/$ $1 [R=301,L]
+
