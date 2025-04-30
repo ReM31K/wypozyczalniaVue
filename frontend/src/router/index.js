@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Імпортуємо компоненти
 import StartPage from '../views/StartPage.vue'
 import Autorzy from '../views/Autorzy.vue'
 import Ksiazki from '../views/Ksiazki.vue'
@@ -17,12 +16,11 @@ import AdminWypozyczenia from '../views/admin/AdminWypozyczenia.vue'
 
 import AdminAddAutor from '../views/admin/AdminAddAutor.vue'
 import AdminAddKsiazka from '../views/admin/AdminAddKsiazka.vue'
-//import AdminAddWypozyczenie from '../views/admin/AdminAddWypozyczenie.vue'
-//import AdminReturnBook from '../views/admin/AdminReturnBook.vue'
+import AdminAddWypozyczenie from '../views/admin/AdminAddWypozyczenie.vue'
+import AdminReturnBook from '../views/admin/AdminReturnBook.vue'
 
 const routes = [
-  { path: '/', component: AdminPanel }, // ← ТИМЧАСОВО головна сторінка
-  { path: '/start', component: StartPage }, // ← перенесли сюди колишній StartPage
+  { path: '/', component: StartPage },
   { path: '/autorzy', component: Autorzy },
   { path: '/ksiazki', component: Ksiazki },
   { path: '/wypozyczenia', component: Wypozyczenia },
@@ -38,8 +36,8 @@ const routes = [
 
   { path: '/admin/addAutor', component: AdminAddAutor },
   { path: '/admin/addKsiazka', component: AdminAddKsiazka },
-  //{ path: '/admin/addWypozyczenie', component: AdminAddWypozyczenie },
-  //{ path: '/admin/returnBook', component: AdminReturnBook },
+  { path: '/admin/addWypozyczenie', component: AdminAddWypozyczenie },
+  { path: '/admin/returnBook', component: AdminReturnBook },
 ]
 
 const router = createRouter({
