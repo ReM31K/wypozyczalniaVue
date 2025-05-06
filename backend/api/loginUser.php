@@ -22,11 +22,11 @@ session_start();
 
 include '../Main/baza.php';
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-ini_set('session.cookie_path', '/');  // встановлює правильний шлях для cookies
-ini_set('session.gc_maxlifetime', 3600);  // час життя сесії 1 година
+//ini_set('session.cookie_path', '/');  // встановлює правильний шлях для cookies
+//ini_set('session.gc_maxlifetime', 3600);  // час життя сесії 1 година
 
 // ======= DEBUG LOGGING START =======
-$logFile = '/tmp/login_log.txt';
+//$logFile = '/tmp/login_log.txt';
 
 file_put_contents($logFile, "SESSION DATA: " . print_r($_SESSION, true) . PHP_EOL, FILE_APPEND);
 file_put_contents($logFile, "REQUEST METHOD: " . $_SERVER["REQUEST_METHOD"] . PHP_EOL, FILE_APPEND);

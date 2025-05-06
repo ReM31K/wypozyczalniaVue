@@ -1,17 +1,6 @@
 <template>
   <div class="wypozyczenia-page">
-    <header class="header-container">
-      <img src="/images/logo.png" alt="Logo" class="logo" />
-      <h1>Wypożyczenia</h1>
-      <div class="auth-container">
-        <button v-if="loggedIn" @click="logout">Logout</button>
-        <div v-else>
-          <RouterLink to="/login">Log in</RouterLink> |
-          <RouterLink to="/register">Reg in</RouterLink>
-        </div>
-      </div>
-    </header>
-
+    <HeaderUserWypozyczenie :onLogout="logout" />
     <main>
       <h2>Twoje wypożyczone książki</h2>
       <table v-if="wypozyczenia && wypozyczenia.length > 0">
@@ -33,43 +22,37 @@
       <p v-else>Nie wypożyczyłeś żadnej książki.</p>
     </main>
 
-    <footer>
-      <p>© 2025 Wszelkie prawa zastrzeżone.</p>
-    </footer>
+    <Footer />
   </div>
 </template>
 
 <script setup>
+import HeaderUserWypozyczenie from '@/components/HeaderUserWypozyczenie.vue'
+import Footer from '@/components/Footer.vue'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
-// Створення властивості для збереження стану автентифікації
 const loggedIn = ref(false)
-
-// ініціалізуємо масив wypozyczenia
 const wypozyczenia = ref([])
 
 const logout = async () => {
   try {
-    // Відправка запиту на сервер для завершення сесії
     const res = await fetch('http://localhost/wypozyczalniaVue/backend/api/logout.php', {
       method: 'POST',
-      credentials: 'include', // Це дозволить передавати сесійні куки
-    });
+      credentials: 'include',
+    })
 
-    // Перевірка відповіді сервера
     if (!res.ok) {
-      throw new Error('Failed to logout');
+      throw new Error('Failed to logout')
     }
 
-    // Якщо все добре, перенаправляємо на сторінку логіну
-    router.push('/login');
+    loggedIn.value = false
+    router.push('/login')
   } catch (error) {
-    console.error('Error logging out:', error);
+    console.error('Error logging out:', error)
   }
-};
+}
 
 onMounted(async () => {
   try {
@@ -77,15 +60,9 @@ onMounted(async () => {
       credentials: 'include'
     })
 
-    if (!res.ok) {
-      throw new Error('Failed to authenticate: ' + res.statusText)
-    }
+    if (!res.ok) throw new Error('Failed to authenticate')
 
-    const textData = await res.text()
-    console.log('Auth response raw:', textData)
-
-    const data = JSON.parse(textData)
-    console.log('Auth response:', data)
+    const data = await res.json()
 
     if (!data.authenticated) {
       loggedIn.value = false
@@ -95,30 +72,20 @@ onMounted(async () => {
 
     loggedIn.value = true
 
-    const booksRes = await fetch(`http://localhost/wypozyczalniaVue/backend/api/getWypozyczeniaByCzytelnik.php?czytelnik_id=${data.user_id}`, {
-      credentials: 'include'
-    })
+    const booksRes = await fetch(
+      `http://localhost/wypozyczalniaVue/backend/api/getWypozyczeniaByCzytelnik.php?czytelnik_id=${data.user_id}`,
+      { credentials: 'include' }
+    )
 
-    if (!booksRes.ok) {
-      throw new Error('Failed to fetch books: ' + booksRes.statusText)
-    }
-
-    const booksText = await booksRes.text()
-    console.log('Books response raw:', booksText)
-
-    const booksData = JSON.parse(booksText)
-    if (Array.isArray(booksData)) {
-      wypozyczenia.value = booksData
-    } else {
-      console.error('Invalid response format:', booksData)
-    }
+    const booksData = await booksRes.json()
+    wypozyczenia.value = Array.isArray(booksData) ? booksData : []
   } catch (error) {
-    console.error('Error checking auth or fetching books:', error)
+    console.error('Error:', error)
     router.push('/login')
   }
 })
 </script>
 
 <style scoped>
-/* Ваші стилі тут */
+/* Стилі можна додати тут */
 </style>
