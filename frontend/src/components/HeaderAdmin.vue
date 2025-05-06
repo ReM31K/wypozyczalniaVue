@@ -10,7 +10,7 @@
       </div>
     </div>
     <nav>
-      <RouterLink to="/admin/dashboard">Panel główny</RouterLink>
+      <RouterLink to="/admin/panel">Panel główny</RouterLink>
       <RouterLink to="/admin/autorzy">Autorzy</RouterLink>
       <RouterLink to="/admin/ksiazki">Książki</RouterLink>
       <RouterLink to="/admin/czytelnicy">Czytelnicy</RouterLink>
@@ -30,8 +30,21 @@ export default {
   setup() {
     const router = useRouter()
 
-    function logout() {
-      router.push('/start')
+    async function logout() {
+      try {
+        const res = await fetch('http://localhost/wypozyczalniaVue/backend/api/logout.php', {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to logout');
+        }
+
+        router.push('/login'); // Перенаправляє на сторінку логіну
+      } catch (error) {
+        console.error('Error logging out:', error);
+      }
     }
 
     return { logout }

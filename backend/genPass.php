@@ -5,10 +5,10 @@ $DB_PASS = "";
 $DB_NAME = "wypozyczalnia";
 
 // Дані для адміністратора
-$admin_email = "adminostap@example.com";     // Емейл адміністратора
-$admin_password = "adminPassword";      // Пароль для хешування
+$admin_email = "adminSigma@example.com";     // Емейл адміністратора
+$admin_password = "sigma";      // Пароль для хешування
 $admin_first_name = "Admin";            // Ім'я адміністратора
-$admin_last_name = "Adminowicz";        // Прізвище адміністратора
+$admin_last_name = "Sigmowicz";        // Прізвище адміністратора
 
 // Генерація хешу паролю
 $hashed_password = password_hash($admin_password, PASSWORD_DEFAULT);

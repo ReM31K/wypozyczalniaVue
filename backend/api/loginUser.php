@@ -1,20 +1,34 @@
 <?php
-header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Origin: http://localhost:5173');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// Дозволяємо передавати куки, сесії тощо
+header('Access-Control-Allow-Credentials: true');
 
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+// Якщо це preflight-запит (OPTIONS) — відповідаємо одразу
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+    header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+    exit;
 }
+session_start();
+
+
+// if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+//     http_response_code(200);
+//     exit();
+// }
+
 
 include '../Main/baza.php';
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-session_start();
+ini_set('session.cookie_path', '/');  // встановлює правильний шлях для cookies
+ini_set('session.gc_maxlifetime', 3600);  // час життя сесії 1 година
 
 // ======= DEBUG LOGGING START =======
-$logFile = __DIR__ . '/log.txt';
+$logFile = '/tmp/login_log.txt';
+
+file_put_contents($logFile, "SESSION DATA: " . print_r($_SESSION, true) . PHP_EOL, FILE_APPEND);
 file_put_contents($logFile, "REQUEST METHOD: " . $_SERVER["REQUEST_METHOD"] . PHP_EOL, FILE_APPEND);
 
 $raw_input = file_get_contents('php://input');

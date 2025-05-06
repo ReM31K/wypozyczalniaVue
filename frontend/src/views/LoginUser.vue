@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderGuest />
+    <HeaderUser />
     <main>
       <img src="/images/logowanie.jpg" id="logowanieImage" alt="Login image" />
 
@@ -47,39 +47,41 @@ export default {
     }
   },
   methods: {
-    async handleLogin() {
-      console.log("Email: ", this.email);
-      console.log("Password: ", this.password);
+async handleLogin() {
+  this.error = '';
 
-      try {
-        const response = await axios.get(
-          'http://localhost/wypozyczalniaVue/backend/api/test_log.php',
-          {
-            email: this.email,
-            haslo: this.password
-          },
-          {
-            withCredentials: true,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-
-        if (response.data.status === 'success') {
-          if (response.data.role === 'user') {
-            this.$router.push('/wypozyczenia');
-          } else if (response.data.role === 'admin') {
-            this.$router.push('/admin');
-          }
-        } else {
-          this.error = response.data.message || 'Błąd logowania.';
+  try {
+    console.log("Запит на сервер...");
+    const response = await axios.post(
+      'http://localhost/wypozyczalniaVue/backend/api/loginUser.php', 
+      {
+        email: this.email,
+        haslo: this.password
+      },
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
         }
-      } catch (err) {
-        this.error = 'Wystąpił błąd serwera.';
-        console.error('Login error:', err.response ? err.response.data : err.message);
       }
+    );
+    
+    console.log("Отримана відповідь:", response.data);
+
+    if (response.data.status === 'success') {
+      if (response.data.role === 'user') {
+        this.$router.push('/wypozyczenia');
+      } else if (response.data.role === 'admin') {
+        this.$router.push('/admin/panel');
+      }
+    } else {
+      this.error = response.data.message || 'Błąd logowania.';
     }
+  } catch (err) {
+    this.error = 'Wystąpił błąd serwera.';
+    console.error('Login error:', err.response ? err.response.data : err.message);
+  }
+}
   }
 }
 

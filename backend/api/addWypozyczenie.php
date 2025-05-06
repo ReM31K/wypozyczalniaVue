@@ -28,8 +28,8 @@ if (!$ksiazka) {
     exit;
 }
 
-$stmt = $conn->prepare("INSERT INTO wypozyczenie (czytelnik_id, ksiazka_id) VALUES (?, ?)");
-$stmt->bind_param("ii", $czytelnik_id, $ksiazka_id);
+$stmt = $conn->prepare("INSERT INTO wypozyczenie (czytelnik_id, ksiazka_id, ilosc) VALUES (?, ?, ?)");
+$stmt->bind_param("iii", $czytelnik_id, $ksiazka_id, $ilosc_pozyczona);
 
 if ($stmt->execute()) {
     $stmt = $conn->prepare("UPDATE ksiazka SET ilosc_dostepnych = ilosc_dostepnych - ? WHERE id = ?");
@@ -40,4 +40,3 @@ if ($stmt->execute()) {
 } else {
     echo json_encode(["error" => "Nie udało się dodać wypożyczenia"]);
 }
-?>

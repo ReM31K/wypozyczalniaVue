@@ -14,7 +14,6 @@
 
     <main>
       <h2>Twoje wypożyczone książki</h2>
-      <!-- Перевірка на наявність елементів у масиві wypozyczenia -->
       <table v-if="wypozyczenia && wypozyczenia.length > 0">
         <thead>
           <tr>
@@ -46,36 +45,76 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+// Створення властивості для збереження стану автентифікації
+const loggedIn = ref(false)
+
 // ініціалізуємо масив wypozyczenia
 const wypozyczenia = ref([])
 
+const logout = async () => {
+  try {
+    // Відправка запиту на сервер для завершення сесії
+    const res = await fetch('http://localhost/wypozyczalniaVue/backend/api/logout.php', {
+      method: 'POST',
+      credentials: 'include', // Це дозволить передавати сесійні куки
+    });
+
+    // Перевірка відповіді сервера
+    if (!res.ok) {
+      throw new Error('Failed to logout');
+    }
+
+    // Якщо все добре, перенаправляємо на сторінку логіну
+    router.push('/login');
+  } catch (error) {
+    console.error('Error logging out:', error);
+  }
+};
+
 onMounted(async () => {
   try {
-    const res = await fetch('/api/auth/check.php', {
-      credentials: 'include' // обов’язково для сесії
+    const res = await fetch('http://localhost/wypozyczalniaVue/backend/api/auth/check.php', {
+      credentials: 'include'
     })
-    const data = await res.json()
+
+    if (!res.ok) {
+      throw new Error('Failed to authenticate: ' + res.statusText)
+    }
+
+    const textData = await res.text()
+    console.log('Auth response raw:', textData)
+
+    const data = JSON.parse(textData)
+    console.log('Auth response:', data)
 
     if (!data.authenticated) {
-      router.push('/login') // Якщо не авторизовано, перенаправляємо на логін
+      loggedIn.value = false
+      router.push('/login')
       return
     }
 
-    // Якщо користувач авторизований, отримуємо дані про книги
-    const booksRes = await fetch('/api/books/getWypozyczenia.php', {
-      credentials: 'include' // обов’язково для сесії
-    })
-    const booksData = await booksRes.json()
+    loggedIn.value = true
 
-    // Перевіряємо наявність даних
+    const booksRes = await fetch(`http://localhost/wypozyczalniaVue/backend/api/getWypozyczeniaByCzytelnik.php?czytelnik_id=${data.user_id}`, {
+      credentials: 'include'
+    })
+
+    if (!booksRes.ok) {
+      throw new Error('Failed to fetch books: ' + booksRes.statusText)
+    }
+
+    const booksText = await booksRes.text()
+    console.log('Books response raw:', booksText)
+
+    const booksData = JSON.parse(booksText)
     if (Array.isArray(booksData)) {
-      wypozyczenia.value = booksData // Якщо дані отримано, зберігаємо їх в масив
+      wypozyczenia.value = booksData
     } else {
       console.error('Invalid response format:', booksData)
     }
   } catch (error) {
     console.error('Error checking auth or fetching books:', error)
-    router.push('/login') // У разі помилки також перенаправляємо на логін
+    router.push('/login')
   }
 })
 </script>
